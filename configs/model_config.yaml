@@ -1,0 +1,25 @@
+model:
+  classification:
+    name: "resnet50"
+    pretrained: false  # False car pas d'internet sur Kaggle
+    num_classes: 4
+    input_size: [224, 224]
+  
+  captioning:
+    name: "Salesforce/blip-image-captioning-base"
+    max_length: 50
+
+training:
+  batch_size: 32
+  epochs: 10
+  learning_rate: 0.001
+  validation_split: 0.2
+  early_stopping_patience: 3
+
+mlflow:
+  experiment_name: "image-classifier"
+  tracking_uri: "./mlruns"
+
+class_weights:
+  enabled: true
+  method: "inverse_frequency"
