@@ -1,0 +1,62 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+*.pyc
+*.pyo
+
+# MLflow
+mlruns/
+mlflow.db
+
+# Experiment logs
+experiment_logs/
+
+# DVC cache (ne pas versionner le cache)
+.dvc/cache
+.dvc/tmp
+
+# Data files - MAIS on garde les .dvc metadata !
+/data/raw/*
+!/data/raw/.gitkeep
+!/data/raw/*.dvc
+
+/data/processed/*
+!/data/processed/.gitkeep
+!/data/processed/*.dvc
+
+# Models - MAIS on garde les .dvc metadata !
+/models/*
+!/models/.gitkeep
+!/models/*.dvc
+
+# Metrics
+/metrics/*
+!/metrics/.gitkeep
+
+# Env files
+.env
