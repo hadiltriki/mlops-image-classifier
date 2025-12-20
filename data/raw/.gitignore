@@ -60,3 +60,7 @@ experiment_logs/
 
 # Env files
 .env
+/test.txt
+# dvc-gdrive
+dvc-gdrive.json
+/test_file.txt
