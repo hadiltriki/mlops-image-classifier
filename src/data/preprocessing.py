@@ -1,43 +1,45 @@
-"""Module de prétraitement des images"""
-import os
-from pathlib import Path
-from PIL import Image
-import yaml
+"""
+Module de preprocessing des images
+"""
+from torchvision import transforms
 
-def preprocess_images(raw_dir="data/raw", processed_dir="data/processed", img_size=(224, 224)):
+def get_train_transform(img_size=224):
     """
-    Redimensionne toutes les images
+    Transformations pour l'entraînement (avec augmentation)
     
     Args:
-        raw_dir: Dossier source
-        processed_dir: Dossier destination
-        img_size: Taille cible
+        img_size (int): Taille des images
+    
+    Returns:
+        torchvision.transforms.Compose
     """
-    os.makedirs(processed_dir, exist_ok=True)
-    
-    count = 0
-    for root, dirs, files in os.walk(raw_dir):
-        for file in files:
-            if file.lower().endswith(('.jpg', '.png', '.jpeg')):
-                img_path = os.path.join(root, file)
-                
-                try:
-                    img = Image.open(img_path).convert('RGB')
-                    img = img.resize(img_size)
-                    
-                    rel_path = os.path.relpath(root, raw_dir)
-                    save_dir = os.path.join(processed_dir, rel_path)
-                    os.makedirs(save_dir, exist_ok=True)
-                    
-                    img.save(os.path.join(save_dir, file))
-                    count += 1
-                    
-                    if count % 100 == 0:
-                        print(f"Processed {count} images...")
-                except Exception as e:
-                    print(f"Error processing {img_path}: {e}")
-    
-    print(f"Preprocessing complete: {count} images")
+    return transforms.Compose([
+        transforms.Resize((img_size, img_size)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomRotation(10),
+        transforms.ColorJitter(brightness=0.1),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
+    ])
 
-if __name__ == "__main__":
-    preprocess_images()
+def get_val_transform(img_size=224):
+    """
+    Transformations pour la validation (sans augmentation)
+    
+    Args:
+        img_size (int): Taille des images
+    
+    Returns:
+        torchvision.transforms.Compose
+    """
+    return transforms.Compose([
+        transforms.Resize((img_size, img_size)),
+        transforms.ToTensor(),
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],
+            std=[0.229, 0.224, 0.225]
+        )
+    ])

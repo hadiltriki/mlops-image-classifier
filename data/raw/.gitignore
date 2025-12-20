@@ -64,3 +64,4 @@ experiment_logs/
 # dvc-gdrive
 dvc-gdrive.json
 /test_file.txt
+/UTKFace.zip

@@ -1,19 +1,35 @@
+# configs/data_config.yaml
 dataset:
   name: "UTKFace"
-  kaggle_dataset: "jangedoo/utkface-new"
-  max_samples: 5000
-  classes:
-    - "bebe"      # 0-2 ans
-    - "enfant"    # 3-12 ans
-    - "femme"     # 13+ ans, genre féminin
-    - "homme"     # 13+ ans, genre masculin
+  source: "https://www.kaggle.com/datasets/jangedoo/utkface-new"
+  
+  paths:
+    raw: "data/raw/UTKFace"
+    processed: "data/processed"
+  
+  total_images: 23000
+  sample_size: 5000  # Nombre utilisé pour training
+  
+  split:
+    train: 0.8  # 4000 images
+    val: 0.2    # 1000 images
+  
+  labels:
+    format: "[age]_[gender]_[race]_[datetime].jpg"
+    age_ranges:
+      bebe: [0, 2]
+      enfant: [3, 12]
+    gender_map:
+      0: "homme"
+      1: "femme"
 
-preprocessing:
-  image_size: [224, 224]
-  normalization:
-    mean: [0.485, 0.456, 0.406]
-    std: [0.229, 0.224, 0.225]
-  augmentation:
-    rotation_range: 15
-    horizontal_flip: true
-    brightness_range: [0.8, 1.2]
+augmentation:
+  train:
+    - RandomHorizontalFlip
+    - RandomRotation: 10
+    - ColorJitter:
+        brightness: 0.1
+  
+  validation:
+    - Resize: 224
+    - Normalize

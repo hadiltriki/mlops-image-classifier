@@ -1,77 +1,98 @@
-"""Module de chargement des données"""
+"""
+Module de chargement du dataset UTKFace
+"""
 import os
 import pandas as pd
 from pathlib import Path
 
-CLASSES = ["bebe", "enfant", "femme", "homme"]
-
 def parse_utkface_filename(filename):
     """
-    Parse UTKFace filename: [age]_[gender]_[race]_[date].jpg
+    Parse le nom de fichier UTKFace
+    Format: [age]_[gender]_[race]_[date&time].jpg
+    
+    Args:
+        filename (str): Nom du fichier
     
     Returns:
-        dict: Informations extraites
+        dict: {age, gender, race}
     """
     try:
         parts = filename.split('_')
         age = int(parts[0])
-        gender = int(parts[1])  # 0=male, 1=female
-        
-        # Catégorisation
-        if age <= 2:
-            category = 0  # bebe
-        elif age <= 12:
-            category = 1  # enfant
-        elif gender == 1:
-            category = 2  # femme
-        else:
-            category = 3  # homme
+        gender = int(parts[1])
+        race = int(parts[2])
         
         return {
             'age': age,
             'gender': gender,
-            'category': category,
-            'label': CLASSES[category]
+            'race': race
         }
     except:
         return None
 
-def load_dataset(data_dir, max_samples=None):
+def classify_image(age, gender):
     """
-    Charge le dataset UTKFace
+    Classifie l'image en 4 catégories
     
     Args:
-        data_dir: Chemin vers les données
-        max_samples: Nombre max d'images
+        age (int): Âge de la personne
+        gender (int): 0=homme, 1=femme
     
     Returns:
-        pd.DataFrame: Dataset avec métadonnées
+        str: Classe (bebe, enfant, femme, homme)
     """
-    image_files = []
+    if age <= 2:
+        return 'bebe'
+    elif age <= 12:
+        return 'enfant'
+    elif gender == 1:
+        return 'femme'
+    else:
+        return 'homme'
+
+def load_utkface_dataset(data_path='data/raw/UTKFace'):
+    """
+    Charge le dataset UTKFace et crée un DataFrame
     
-    for root, dirs, files in os.walk(data_dir):
-        for file in files:
-            if file.lower().endswith(('.jpg', '.png', '.jpeg')):
-                image_files.append(os.path.join(root, file))
+    Args:
+        data_path (str): Chemin vers le dossier UTKFace
     
-    if max_samples:
-        image_files = image_files[:max_samples]
-    
+    Returns:
+        pd.DataFrame: DataFrame avec colonnes [path, age, gender, race, label]
+    """
     data = []
-    for img_path in image_files:
-        filename = os.path.basename(img_path)
-        info = parse_utkface_filename(filename)
-        
-        if info:
-            info['path'] = img_path
-            data.append(info)
+    data_path = Path(data_path)
     
+    # Parcourir tous les fichiers
+    for img_file in data_path.glob('*.jpg'):
+        filename = img_file.name
+        
+        # Parser le nom
+        parsed = parse_utkface_filename(filename)
+        if parsed is None:
+            continue
+        
+        # Classifier
+        label = classify_image(parsed['age'], parsed['gender'])
+        
+        # Ajouter au dataset
+        data.append({
+            'path': str(img_file),
+            'age': parsed['age'],
+            'gender': parsed['gender'],
+            'race': parsed['race'],
+            'label': label
+        })
+    
+    # Créer DataFrame
     df = pd.DataFrame(data)
-    print(f" Dataset loaded: {len(df)} images")
-    print(f" Distribution:\n{df['label'].value_counts()}")
+    
+    print(f"✅ Dataset chargé: {len(df)} images")
+    print(f"\n📊 Distribution des classes:")
+    print(df['label'].value_counts())
     
     return df
 
 if __name__ == "__main__":
-    df = load_dataset("data/raw", max_samples=100)
-    print(df.head())
+    # Test
+    df = load_utkface_dataset()
