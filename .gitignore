@@ -1,27 +1,59 @@
-# Data (géré par DVC)
-data/raw/*
-data/processed/*
-!data/raw/.gitkeep
-!data/processed/.gitkeep
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 
-# Models (géré par DVC)
-models/*
-!models/.gitkeep
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Python
+*.pyc
+*.pyo
 
 # MLflow
 mlruns/
 mlflow.db
 
-# Experiments logs
+# Experiment logs
 experiment_logs/
 
-# DVC
+# DVC - IMPORTANT: NE PAS IGNORER les .dvc files !
+/dvc/cache
+.dvc/tmp
 .dvc/cache
 
-# Environment
-.env
-venv/
-env/
+# Data files (mais PAS les .dvc metadata files)
+/data/raw/*
+/data/processed/*
+!/data/raw/.gitkeep
+!/data/processed/.gitkeep
 
-# Jupyter
-.ipynb_checkpoints/
+# Models (mais PAS les .dvc metadata files)
+/models/*
+!/models/.gitkeep
+
+# Metrics
+/metrics/*
+!/metrics/.gitkeep
+
+# Env files
+.env
