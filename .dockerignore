@@ -1,14 +1,48 @@
-__pycache__
+# Python
+__pycache__/
 *.pyc
 *.pyo
+*.pyd
 .Python
+
+# Virtual environment
 venv/
-.git
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Git
+.git/
 .gitignore
-.dvc
-data/
-notebooks/
-tests/
-*.md
-mlruns/
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter
 .ipynb_checkpoints/
+
+# Pytest
+.pytest_cache/
+htmlcov/
+.coverage
+*.cover
+
+# Logs
+*.log
+logs/
+
+# Data (géré par DVC)
+data/raw/
+data/processed/
+
+# MLflow
+mlruns/
