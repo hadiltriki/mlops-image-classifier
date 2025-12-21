@@ -2,9 +2,9 @@ name: MLOps CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, imen, salma ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, imen, salma ]
 
 jobs:
   test:
