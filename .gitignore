@@ -26,12 +26,12 @@ data/processed/*
 !data/processed/.gitignore
 
 # Modèles (gérés par DVC)
-models/*
-!models/*.dvc
+models/**
+!models/**/*.dvc
 !models/.gitignore
-*.pth
+
 *.h5
-*.pkl
+
 
 # Logs
 logs/
