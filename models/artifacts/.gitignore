@@ -26,7 +26,15 @@ data/processed/*
 !data/processed/.gitignore
 
 # Modèles (gérés par DVC)
-models/**
+# Modèles (gérés par DVC) - Ignore UNIQUEMENT les fichiers binaires
+models/**/*.pth
+models/**/*.h5
+models/**/*.pkl
+models/**/*.joblib
+models/**/*.onnx
+models/**/*.pt
+models/**/*.weights
+models/**/*.bin
 !models/**/*.dvc
 !models/.gitignore
 
