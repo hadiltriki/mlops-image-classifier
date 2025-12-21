@@ -1,6 +1,7 @@
 """
 API FastAPI pour servir le modèle de classification
 """
+from src.utils.mlflow_utils import log_prediction
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
@@ -111,6 +112,7 @@ async def predict(file: UploadFile = File(...)):
         
         # Prédiction
         result = classifier.predict(temp_path)
+        log_prediction(result)
         
         logger.info(f"Prédiction: {result['predicted_class']} ({result['confidence']:.2f}%)")
         
