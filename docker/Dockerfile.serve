@@ -1,0 +1,40 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+COPY requirements.txt .
+RUN pip install --no-cache-dir \
+    fastapi \
+    uvicorn[standard] \
+    torch \
+    torchvision \
+    pillow \
+    pyyaml \
+    python-multipart
+
+COPY src/serving/ ./src/serving/
+COPY src/models/inference.py ./src/models/
+COPY src/models/__init__.py ./src/models/
+COPY src/data/preprocessing.py ./src/data/
+COPY src/data/__init__.py ./src/data/
+COPY src/__init__.py ./src/
+COPY configs/ ./configs/
+
+RUN mkdir -p models/artifacts
+COPY models/artifacts/best_model.pth ./models/artifacts/
+
+RUN useradd -m -u 1000 appuser && \
+    chown -R appuser:appuser /app
+USER appuser
+
+ENV PYTHONUNBUFFERED=1
+ENV MODEL_PATH=/app/models/artifacts/best_model.pth
+
+EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:8000/health || exit 1
+
+CMD ["uvicorn", "src.serving.api:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]

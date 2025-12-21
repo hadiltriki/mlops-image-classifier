@@ -1,0 +1,79 @@
+services:
+  dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    container_name: mlops-dev
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    volumes:
+      - .:/app
+      - ./models/artifacts:/app/models/artifacts
+    environment:
+      - ENVIRONMENT=development
+      - PYTHONUNBUFFERED=1
+    command: uvicorn src.serving.api:app --reload --host 0.0.0.0 --port 8000
+    profiles:
+      - development
+
+  test:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.test
+    container_name: mlops-test
+    volumes:
+      - ./htmlcov:/app/htmlcov
+      - ./coverage.xml:/app/coverage.xml
+    environment:
+      - PYTHONUNBUFFERED=1
+    profiles:
+      - testing
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.serve
+    container_name: mlops-api
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./models/artifacts:/app/models/artifacts:ro
+    environment:
+      - ENVIRONMENT=production
+      - MODEL_PATH=/app/models/artifacts/best_model.pth
+      - WORKERS=2
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    profiles:
+      - production
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:v2.9.2
+    container_name: mlops-mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlruns:/mlflow/mlruns
+    command: >
+      mlflow server
+      --host 0.0.0.0
+      --port 5000
+      --backend-store-uri /mlflow/mlruns
+      --default-artifact-root /mlflow/mlruns
+    profiles:
+      - production
+      - development
+
+volumes:
+  mlruns:
+    driver: local
+
+networks:
+  default:
+    name: mlops-network

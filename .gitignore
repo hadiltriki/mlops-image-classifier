@@ -50,6 +50,10 @@ Thumbs.db
 # Env files
 .env
 .env.local
+venv/
+env/
+.venv/
+ENV/
 
 # MLflow
 mlruns/
