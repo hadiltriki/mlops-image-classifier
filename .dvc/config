@@ -1,4 +1,8 @@
 [core]
-    remote = gdrive
-['remote "gdrive"']
+    remote = dagshub
+['remote "gdrive_remote"']
     url = gdrive://1YA1AdiZiU0gQ4hVB4gzKKu6Pe3o-5fji
+    gdrive_use_service_account = true
+    gdrive_service_account_json_file_path = ../dvc-gdrive.json
+['remote "dagshub"']
+    url = https://dagshub.com/trikihadil22/mlops-image-classifier.dvc
