@@ -1,67 +1,70 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-
-# Distribution / packaging
-build/
-dist/
-*.egg-info/
-
-# Virtual environment
-venv/
 env/
-ENV/
+venv/
+.venv/
 
-# IDEs
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# DVC
+.dvc/cache/
+.dvc/tmp/
+
+# Données (gérées par DVC)
+data/raw/*
+!data/raw/*.dvc
+!data/raw/.gitignore
+
+data/processed/*
+!data/processed/*.dvc
+!data/processed/.gitignore
+
+# Modèles (gérés par DVC)
+# Modèles (gérés par DVC) - Ignore UNIQUEMENT les fichiers binaires
+models/**/*.pth
+models/**/*.h5
+models/**/*.pkl
+models/**/*.joblib
+models/**/*.onnx
+models/**/*.pt
+models/**/*.weights
+models/**/*.bin
+!models/**/*.dvc
+!models/.gitignore
+
+*.h5
+
+
+# Logs
+logs/
+*.log
+
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# OS
 .DS_Store
-
-# Jupyter
-.ipynb_checkpoints/
-
-# Python
-*.pyc
-*.pyo
-
-# MLflow
-mlruns/
-mlflow.db
-
-# Experiment logs
-experiment_logs/
-
-# DVC cache (ne pas versionner le cache)
-.dvc/cache
-.dvc/tmp
-
-# Data files - MAIS on garde les .dvc metadata !
-/data/raw/*
-!/data/raw/.gitkeep
-!/data/raw/*.dvc
-
-/data/processed/*
-!/data/processed/.gitkeep
-!/data/processed/*.dvc
-
-# Models - MAIS on garde les .dvc metadata !
-/models/*
-!/models/.gitkeep
-!/models/*.dvc
-
-# Metrics
-/metrics/*
-!/metrics/.gitkeep
+Thumbs.db
 
 # Env files
 .env
-/test.txt
-# dvc-gdrive
-dvc-gdrive.json
-/test_file.txt
-/UTKFace.zip
+.env.local
+venv/
+env/
+.venv/
+ENV/
+
+# MLflow
+mlruns/
+
+# Docker
+.dockerignore

@@ -66,8 +66,8 @@ class TestClassifyImage:
     def test_classify_edge_cases(self):
         """Test cas limites"""
         # Enfant de 13 ans
-        assert classify_image(age=13, gender=0) == 'homme'
-        assert classify_image(age=13, gender=1) == 'femme'
+        assert classify_image(age=13, gender=0) == 'enfant'
+        assert classify_image(age=13, gender=1) == 'enfant'
 
 class TestLoadDataset:
     """Tests pour load_utkface_dataset"""

@@ -1,0 +1,58 @@
+{
+  "experiment_name": "image-classifier-mlops",
+  "model_version": "v1.0",
+  "timestamp": "2025-12-20T14:09:25",
+  "overall": {
+    "accuracy": 0.716,
+    "total_samples": 5000,
+    "train_samples": 4000,
+    "val_samples": 1000
+  },
+  "per_class": {
+    "bebe": {
+      "precision": 0.886,
+      "recall": 0.484,
+      "f1_score": 0.626,
+      "support": 322
+    },
+    "enfant": {
+      "precision": 0.441,
+      "recall": 0.417,
+      "f1_score": 0.429,
+      "support": 358
+    },
+    "femme": {
+      "precision": 0.704,
+      "recall": 0.683,
+      "f1_score": 0.693,
+      "support": 2034
+    },
+    "homme": {
+      "precision": 0.751,
+      "recall": 0.825,
+      "f1_score": 0.786,
+      "support": 2286
+    }
+  },
+  "dataset": {
+    "name": "UTKFace",
+    "source": "Kaggle",
+    "total_images": 23000,
+    "used_images": 5000,
+    "split_ratio": "80/20"
+  },
+  "hyperparameters": {
+    "batch_size": 32,
+    "epochs": 10,
+    "learning_rate": 0.001,
+    "optimizer": "Adam",
+    "scheduler": "ReduceLROnPlateau",
+    "img_size": 224
+  },
+  "model_info": {
+    "architecture": "ResNet50",
+    "pretrained": false,
+    "framework": "PyTorch",
+    "device": "cpu"
+  }
+}
