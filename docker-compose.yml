@@ -1,4 +1,9 @@
+version: "3.9"
+
 services:
+  # ============================================
+  # DEVELOPMENT
+  # ============================================
   dev:
     build:
       context: .
@@ -12,11 +17,19 @@ services:
       - ./models/artifacts:/app/models/artifacts
     environment:
       - ENVIRONMENT=development
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
       - PYTHONUNBUFFERED=1
+    depends_on:
+      - mlflow
     command: uvicorn src.serving.api:app --reload --host 0.0.0.0 --port 8000
     profiles:
       - development
+    networks:
+      - mlops-network
 
+  # ============================================
+  # TESTING
+  # ============================================
   test:
     build:
       context: .
@@ -29,7 +42,12 @@ services:
       - PYTHONUNBUFFERED=1
     profiles:
       - testing
+    networks:
+      - mlops-network
 
+  # ============================================
+  # PRODUCTION API
+  # ============================================
   api:
     build:
       context: .
@@ -43,6 +61,9 @@ services:
       - ENVIRONMENT=production
       - MODEL_PATH=/app/models/artifacts/best_model.pth
       - WORKERS=2
+      - MLFLOW_TRACKING_URI=http://mlflow:5000
+    depends_on:
+      - mlflow
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
@@ -52,14 +73,19 @@ services:
       start_period: 40s
     profiles:
       - production
+    networks:
+      - mlops-network
 
+  # ============================================
+  # MLFLOW SERVER
+  # ============================================
   mlflow:
-    image: ghcr.io/mlflow/mlflow:v2.9.2
+    image: ghcr.io/mlflow/mlflow:v2.10.2
     container_name: mlops-mlflow
     ports:
       - "5000:5000"
     volumes:
-      - ./mlruns:/mlflow/mlruns
+      - mlruns:/mlflow/mlruns
     command: >
       mlflow server
       --host 0.0.0.0
@@ -69,11 +95,19 @@ services:
     profiles:
       - production
       - development
+    networks:
+      - mlops-network
 
+# ============================================
+# VOLUMES
+# ============================================
 volumes:
   mlruns:
     driver: local
 
+# ============================================
+# NETWORK
+# ============================================
 networks:
-  default:
-    name: mlops-network
+  mlops-network:
+    driver: bridge

@@ -2,23 +2,24 @@
 Script de démo pour MLflow monitoring
 """
 
-
 import sys
 import os
 from pathlib import Path
-
-
-
-# Maintenant on peut importer depuis src
-from src.utils.mlflow_logger import init_mlflow, log_prediction, log_batch_predictions, log_model_info
-from src.data.load_data import  classify_image
-from src.models.inference import ImageClassifier
-
 import random
-# Ajouter le répertoire racine au PYTHONPATH
+from src.utils.mlflow_logger import log_and_register_model
+
+
+# ⚠️ IMPORTANT: Ajouter le répertoire racine au PYTHONPATH D'ABORD
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+# Maintenant on peut importer depuis src
+from src.utils.mlflow_logger import init_mlflow, log_prediction, log_batch_predictions, log_model_info
+from src.data.load_data import classify_image
+from src.models.inference import ImageClassifier
+
+classifier = ImageClassifier()
+log_and_register_model(classifier.model, model_name="image_classifier")
 def demo_single_predictions():
     """Démo de logging de prédictions individuelles"""
     print("=" * 60)
@@ -191,3 +192,4 @@ if __name__ == "__main__":
         print(f"\n❌ ERREUR: {e}")
         import traceback
         traceback.print_exc()
+

@@ -43,7 +43,7 @@ def classify_image(age, gender):
     """
     if age <= 2:
         return 'bebe'
-    elif age <= 12:
+    elif age <= 13:
         return 'enfant'
     elif gender == 1:
         return 'femme'
