@@ -7,29 +7,3 @@ stages:
     outs:
       - data/processed
 
-  train:
-    cmd: python src/models/train.py
-    deps:
-      - src/models/train.py
-      - data/processed
-      - configs/model_config.yaml
-    outs:
-      - models/best_model.pth
-    metrics:
-      - metrics/train_metrics.json
-
-  evaluate:
-    cmd: python src/models/evaluate.py
-    deps:
-      - src/models/evaluate.py
-      - models/best_model.pth
-      - data/processed
-    metrics:
-      - metrics/eval_metrics.json
-
-  export:
-    cmd: python src/models/export_model.py
-    deps:
-      - models/best_model.pth
-    outs:
-      - models/exported
